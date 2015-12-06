@@ -1,0 +1,31 @@
+language: cpp
+
+os:
+  - linux
+
+env:
+  - CONFIG=Release
+  - CONFIG=Debug
+
+install:
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+         wget --no-check-certificate http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-i386.tar.gz
+      && tar -xzf cmake-3.3.2-Linux-i386.tar.gz
+      && sudo cp -fR cmake-3.3.2-Linux-i386/* /usr
+      && sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+      && sudo apt-add-repository -y ppa:beineri/opt-qt551
+      && sudo apt-get -qq update
+      && sudo apt-get -qq install gcc-5 g++-5 libc6-i386 qt55declarative libglib2.0-dev libmtdev-dev libudev-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-xfixes0-dev libxext-dev
+      && export CXX="g++-5"
+      && export CC="gcc-5"
+      ; 
+    fi
+
+script:
+  -    mkdir build
+    && cd build
+    && cmake -DCMAKE_BUILD_TYPE=$CONFIG -DCMAKE_PREFIX_PATH=/opt/qt55 -Denable-docs=OFF -Denable-glib=OFF ..
+    && make
+
+notifications:
+  email: janarne@gmail.com
